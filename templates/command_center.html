@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>AI InvoiceFlow Command Center</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='dashboard.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>AI InvoiceFlow</h2>
+
+        <a href="/command_center">Command Center</a>
+
+        <a href="/borrower_dashboard">Borrower Dashboard</a>
+
+        <a href="/lender_dashboard">Lender Dashboard</a>
+
+        <a href="/marketplace">Marketplace</a>
+
+        <a href="/upload_invoice">Upload Invoice</a>
+
+        <a href="#">AI Insights</a>
+
+        <a href="#">Settings</a>
+
+        <a href="/logout">Logout</a>
+
+    </div>
+
+    <!-- Main -->
+
+    <div class="main">
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+
+                    Institutional Command Center
+
+                </h1>
+
+                <p>
+
+                    AI-powered private invoice financing built on Canton.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="stats-grid">
+
+            <div class="kpi-card">
+
+                <small>Total Invoices</small>
+
+                <h2>{{ total_invoices }}</h2>
+
+                <span>Across Platform</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>Total Funding</small>
+
+                <h2>${{ "{:,.0f}".format(total_volume) }}</h2>
+
+                <span>Marketplace Volume</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>Average APR</small>
+
+                <h2>{{ average_apr }}%</h2>
+
+                <span>Institutional Rate</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>AI Health Score</small>
+
+                <h2>96</h2>
+
+                <span>Excellent</span>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-body">
+
+            <div class="dashboard-left">
+
+                <div class="dashboard-card">
+
+                    <h2>Platform Modules</h2>
+
+                    <div class="card-divider"></div>
+
+                    <div class="action-grid">
+
+                        <a href="/upload_invoice" class="action-card">
+
+                            <h3>Upload Invoice</h3>
+
+                            <p>AI document ingestion & underwriting</p>
+
+                        </a>
+
+                        <a href="/borrower_dashboard" class="action-card">
+
+                            <h3>Borrower Desk</h3>
+
+                            <p>Manage invoices and funding</p>
+
+                        </a>
+
+                        <a href="/lender_dashboard" class="action-card">
+
+                            <h3>Lender Desk</h3>
+
+                            <p>Review investments and portfolio</p>
+
+                        </a>
+
+                        <a href="/marketplace" class="action-card">
+
+                            <h3>Marketplace</h3>
+
+                            <p>Participate in private auctions</p>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="dashboard-right">
+
+                <div class="dashboard-card">
+
+                    <h2>Platform Overview</h2>
+
+                    <p>• {{ total_invoices }} invoices on platform</p>
+
+                    <p>• {{ active }} live marketplace opportunities</p>
+
+                    <p>• {{ pending }} awaiting AI underwriting</p>
+
+                    <p>• Institutional capital available</p>
+
+                    <p>• Canton privacy enabled</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

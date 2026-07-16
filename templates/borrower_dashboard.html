@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Borrower Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='dashboard.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>AI InvoiceFlow</h2>
+
+        <a href="/borrower_dashboard">Dashboard</a>
+
+        <a href="/upload_invoice">Upload Invoice</a>
+
+        <a href="/borrower_dashboard">My Invoices</a>
+
+        <a href="/marketplace">Marketplace</a>
+
+        <a href="#">AI Insights</a>
+
+        <a href="#">Settings</a>
+
+        <a href="/logout">Logout</a>
+
+    </div>
+
+    <!-- Main Content -->
+
+    <div class="main">
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+
+                    Borrower Command Center
+
+                </h1>
+
+                <p>
+
+                    Monitor funding performance across your invoice portfolio.
+
+                </p>
+
+            </div>
+
+            <div class="header-actions">
+
+                <input
+                        type="text"
+                        placeholder="Search invoices..."
+                        class="search-box">
+
+                <button class="search-btn">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Upload Button -->
+
+        <div class="page-upload">
+
+            <a href="/upload_invoice">
+
+                <button class="btn btn-primary">
+
+                    + Upload New Invoice
+
+                </button>
+
+
+            </a>
+
+        </div>
+
+        <!-- Statistics -->
+
+        <div class="stats-grid">
+
+            <div class="kpi-card">
+
+                <small>
+
+                    Outstanding Funding
+
+                </small>
+
+                <h2>
+
+                    ${{ "{:,.2f}".format(outstanding_amount) }}
+
+                </h2>
+
+                <span>
+
+Live Exposure
+
+</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>
+
+                    Active Invoices
+
+                </small>
+
+                <h2>
+
+                    {{ active_invoices }}
+
+                </h2>
+
+                <span>
+
+Across all industries
+
+</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>
+
+                    Average APR
+
+                </small>
+
+                <h2>
+
+                    {{ average_apr }}%
+
+                </h2>
+
+                <span>
+
+Weighted Average
+
+</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>
+
+                    Funding Success
+
+                </small>
+
+                <h2>
+
+                    98%
+
+                </h2>
+
+                <span>
+
+Institutional Benchmark
+
+</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-body">
+
+            <div class="dashboard-left">
+
+                <!-- Invoice Table -->
+
+                <h2>Recent Invoices</h2>
+
+                <table class="institution-table">
+
+                    <tr>
+
+                        <th>Invoice</th>
+
+                        <th>Buyer</th>
+
+                        <th>Amount</th>
+
+                        <th>Grade</th>
+
+                        <th>APR</th>
+
+                        <th>Status</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                    {% for invoice in invoices %}
+
+                    <tr>
+
+                        <td>{{ invoice.invoice_number }}</td>
+
+                        <td>{{ invoice.buyer }}</td>
+
+                        <td>${{ "{:,.2f}".format(invoice.amount) }}</td>
+
+                        <td>{{ invoice.grade }}</td>
+
+                        <td>{{ invoice.apr }}%</td>
+
+                        <td>
+
+                        <span class="status-{{ invoice.status|lower }}">
+
+                        {{ invoice.status }}
+
+                        </span>
+
+                        </td>
+
+                        <td>
+
+                            <a href="{{ url_for('invoice_details',
+                    invoice_id=invoice.id) }}">
+
+                                <button class="btn btn-outline">
+
+                                    View Details
+
+                                </button>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+            <div class="dashboard-right">
+                <!-- AI Summary -->
+
+                <div class="dashboard-card">
+
+                    <h2>AI Underwriting Summary</h2>
+
+                    <p>
+
+                        Grade A Invoices:
+                        {{ invoices | selectattr("grade","equalto","A") | list | length }}
+
+                    </p>
+
+                    <p>
+
+                        Grade B Invoices:
+                        {{ invoices | selectattr("grade","equalto","B") | list | length }}
+
+                    </p>
+
+                    <p>
+
+                        Pending Funding:
+                        {{ invoices | selectattr("status","equalto","Pending") | list | length }}
+
+                    </p>
+
+                </div>
+
+
+                <!-- AI Recommendations -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+
+                                AI Recommendations
+
+                            </h2>
+
+                            <p>
+
+                                Institutional portfolio guidance
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <ul>
+
+                        <li>
+                            Your Grade A invoices are likely to attract the lowest financing rates.
+                        </li>
+
+                        <li>
+                            Retail-sector invoices currently receive the highest lender activity.
+                        </li>
+
+                        <li>
+                            Consider closing auctions within 24 hours to encourage competitive bidding.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <div class="dashboard-card">
+
+                    <h2>
+
+                        Portfolio Health
+
+                    </h2>
+
+                    <div class="portfolio-score">
+
+                        93
+
+                    </div>
+
+                    <div class="health-progress">
+
+                        <div
+
+                                class="health-fill"
+
+                                style="width:93%">
+
+                        </div>
+
+                    </div>
+
+                    <p>
+
+                        Diversification remains healthy across industries.
+
+                    </p>
+
+                </div>
+
+                <div class="dashboard-card">
+
+                    <h2>
+
+                        Funding Timeline
+
+                    </h2>
+
+                    <div class="timeline-item">
+
+                        Invoice Uploaded
+
+                    </div>
+
+                    <div class="timeline-item">
+
+                        AI Underwritten
+
+                    </div>
+
+                    <div class="timeline-item">
+
+                        Auction Completed
+
+                    </div>
+
+                    <div class="timeline-item">
+
+                        Funding Released
+
+                    </div>
+
+                </div>
+
+                <div class="dashboard-card">
+
+                    <h2>
+
+                        Recent Activity
+
+                    </h2>
+
+                    <div class="activity-feed">
+
+                        <div>
+
+                            AI approved INV-001
+
+                        </div>
+
+                        <div>
+
+                            BlackRock submitted bid
+
+                        </div>
+
+                        <div>
+
+                            Apollo revised APR
+
+                        </div>
+
+                        <div>
+
+                            Funding settled on Canton
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+</div>
+
+</body>
+
+</html>

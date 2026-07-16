@@ -1,0 +1,129 @@
+<div class="container">
+
+<div class="sidebar">
+
+...
+
+</div>
+
+<div class="main">
+
+<div class="page-header">
+
+<div>
+
+<h1>
+
+Submit Institutional Bid
+
+</h1>
+
+<p>
+
+Offer financing terms for this invoice.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="dashboard-body">
+
+<div class="dashboard-left">
+
+<div class="dashboard-card">
+
+<h2>
+
+Bid Details
+
+</h2>
+
+<div class="card-divider"></div>
+
+<form method="POST">
+
+<div class="form-grid">
+
+<input
+type="number"
+step="0.1"
+name="apr"
+placeholder="APR (%)"
+required>
+
+<input
+type="number"
+step="0.01"
+name="amount"
+placeholder="Funding Amount"
+required>
+
+</div>
+
+<button
+class="btn btn-primary"
+type="submit">
+
+Submit Bid
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<div class="dashboard-right">
+
+<div class="dashboard-card">
+
+<h2>
+
+Invoice Summary
+
+</h2>
+
+<p>
+
+Invoice
+
+{{ invoice.invoice_number }}
+
+</p>
+
+<p>
+
+Amount
+
+${{ "{:,.2f}".format(invoice.amount) }}
+
+</p>
+
+<p>
+
+Grade
+
+{{ invoice.grade }}
+
+</p>
+
+<p>
+
+AI Suggested APR
+
+{{ invoice.apr }}%
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>

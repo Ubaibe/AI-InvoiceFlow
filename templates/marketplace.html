@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Marketplace</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='dashboard.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>AI InvoiceFlow</h2>
+
+        <a href="/lender_dashboard">🏠 Dashboard</a>
+
+        <a href="/marketplace">📊 Marketplace</a>
+
+        <a href="#">💼 Portfolio</a>
+
+        <a href="#">🤖 AI Insights</a>
+
+        <a href="#">⚙️ Settings</a>
+
+        <a href="/logout">🚪 Logout</a>
+
+    </div>
+
+    <!-- Main Content -->
+
+    <div class="main">
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+
+                    Institutional Marketplace
+
+                </h1>
+
+                <p>
+
+                    Browse AI-underwritten private credit opportunities.
+
+                </p>
+
+            </div>
+
+            <div class="header-actions">
+
+                <input
+
+                        class="search-box"
+
+                        placeholder="Search invoices...">
+
+                <button class="btn btn-primary">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Statistics -->
+
+        <div class="stats-grid">
+
+            <div class="kpi-card">
+
+                <h4>Active Opportunities</h4>
+
+                <h2>{{ invoices|length }}</h2>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <h4>Average APR</h4>
+
+                <h2>8%</h2>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <h4>Average Risk</h4>
+
+                <h2>84</h2>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <h4>Funding Volume</h4>
+
+                <h2>$2.4M</h2>
+
+            </div>
+
+        </div>
+
+        <!-- AI Opportunity Scanner -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+
+                        AI Opportunity Scanner
+
+                    </h2>
+
+                    <p>
+
+                        Live institutional analytics
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="card-divider"></div>
+
+            <p>
+
+                Retail invoices are currently attracting the highest lender activity.
+
+            </p>
+
+            <p>
+
+                Average Expected Return:
+
+                <strong>8.7%</strong>
+
+            </p>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+
+                        Market Snapshot
+
+                    </h2>
+
+                    <p>
+
+                        Live institutional metrics
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="card-divider"></div>
+
+            <div class="stats-grid">
+
+                <div>
+
+                    <small>
+
+                        Average Deal
+
+                    </small>
+
+                    <h3>
+
+                        $185K
+
+                    </h3>
+
+                </div>
+
+                <div>
+
+                    <small>
+
+                        Institutional Demand
+
+                    </small>
+
+                    <h3>
+
+                        High
+
+                    </h3>
+
+                </div>
+
+                <div>
+
+                    <small>
+
+                        Funding Velocity
+
+                    </small>
+
+                    <h3>
+
+                        24 hrs
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Privacy -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+
+                        Privacy Protection
+
+                    </h2>
+
+                    <p>
+
+                        Canton Confidential Transactions
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="card-divider"></div>
+
+            <p>
+
+                Buyer identities are anonymized in the marketplace.
+
+                Only authorized parties can reveal the complete invoice details after funding.
+
+            </p>
+
+            <p>
+
+                Privacy is enforced through our Canton-powered confidential workflow.
+
+            </p>
+
+        </div>
+
+        <!-- Search -->
+
+        <div class="dashboard-card">
+
+            <input
+
+                    class="search-box"
+
+                    placeholder="Search invoices by grade, industry or amount...">
+
+        </div>
+
+        <!-- Marketplace Cards -->
+
+        <div class="marketplace-grid">
+
+            {% for invoice in invoices %}
+
+            <div class="invoice-card">
+
+                <div class="card-header">
+
+                    <h2>
+
+                        {{ invoice.invoice_number }}
+
+                    </h2>
+
+                    <span class="grade grade-{{ invoice.grade|lower }}">
+
+                        Grade {{ invoice.grade }}
+
+                    </span>
+
+                </div>
+
+                <p>
+
+                    <strong>Buyer:</strong>
+
+                    {{ invoice.display_buyer }}
+
+                </p>
+
+                <p>
+
+                    <strong>Industry:</strong>
+
+                    {{ invoice.industry }}
+
+                </p>
+
+                <p>
+
+                    <strong>Amount:</strong>
+
+                    ${{ "{:,.2f}".format(invoice.amount) }}
+
+                </p>
+
+                <p>
+
+                    <strong>APR:</strong>
+
+                    {{ invoice.apr }}%
+
+                </p>
+
+                <p>
+
+                    <strong>Risk Score:</strong>
+
+                    {{ invoice.risk_score }}
+
+                </p>
+
+                <p>
+
+                    <strong>Due Date:</strong>
+
+                    {{ invoice.due_date }}
+
+                </p>
+
+                <p>
+
+                    <strong>Status:</strong>
+
+                    <span class="status-{{ invoice.status|lower }}">
+
+                        {{ invoice.status }}
+
+                    </span>
+
+                </p>
+
+                <br>
+
+                <strong>Funding Progress</strong>
+
+                <div class="progress">
+
+                    <div
+
+                            class="progress-fill"
+
+                            style="width:{{ invoice.funding_progress }}%;">
+
+                    </div>
+
+                </div>
+
+                <p>
+
+                    {{ invoice.funding_progress }}%
+
+                </p>
+
+                <div class="card-buttons">
+
+                    <a href="{{ url_for('invoice_details',
+                    invoice_id=invoice.id) }}">
+
+                        <button class="btn btn-outline">
+
+                            View Details
+
+                        </button>
+
+                    </a>
+
+                    <a href="{{ url_for('bid_invoice',
+                    invoice_id=invoice.id) }}">
+
+                        <button class="btn btn-primary">
+
+                            Place Bid
+
+                        </button>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

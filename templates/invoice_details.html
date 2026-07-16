@@ -1,0 +1,3331 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <title>Invoice Details</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">
+
+            <div class="logo-mark">
+
+                IF
+
+            </div>
+
+            <div>
+
+                <h2>AI InvoiceFlow</h2>
+
+                <small>
+
+                    Institutional Credit Platform
+
+                </small>
+
+            </div>
+
+        </div>
+
+        <small>
+            Institutional Credit Platform
+        </small>
+
+        <nav>
+
+            <a href="/borrower_dashboard">
+
+                Dashboard
+
+            </a>
+
+            <a href="/marketplace">
+
+
+                Marketplace
+
+            </a>
+
+            <a href="#">
+
+
+                Portfolio
+
+            </a>
+
+            <a href="/upload_invoice">
+
+
+                Upload Invoice
+
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <a href="/logout">
+
+                Logout
+
+            </a>
+
+        </nav>
+
+        <div>
+
+            <small>
+
+                Powered by Canton Network
+
+            </small>
+
+        </div>
+    </div>
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>
+
+                Invoice Details
+
+            </h1>
+
+            <p>
+
+                AI underwriting, institutional auction and private settlement.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- KPI CARDS -->
+    <div class="stats-grid">
+
+        <div class="kpi-card">
+
+            <h4>Invoice Value</h4>
+
+            <h2>${{ invoice.amount }}</h2>
+
+            <span>Live Exposure</span>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <h4>Risk Grade</h4>
+
+            <h2>{{ invoice.grade }}</h2>
+
+            <span>AI Assessment</span>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <h4>Expected APR</h4>
+
+            <h2>{{ invoice.apr }}%</h2>
+
+            <span>Projected Yield</span>
+
+        </div>
+
+        <div class="kpi-card">
+
+            <h4>Funding Progress</h4>
+
+            <h2 id="funding-progress">
+
+                {{ invoice.funding_progress }}%
+
+            </h2>
+
+            <span>Capital Raised</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- AI LOADING PIPELINE -->
+    <div id="ai-loading">
+
+        <h3 class="section-title">
+
+
+            AI Credit Memorandum
+
+        </h3>
+        <div id="loading-step">Initializing...</div>
+    </div>
+
+    <!-- DASHBOARD CONTENT -->
+    <div id="dashboard-content" style="display:none;">
+
+        <div class="dashboard-body">
+
+            <!-- LEFT COLUMN -->
+            <div class="dashboard-left">
+
+                <!-- INVOICE SUMMARY -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+
+                        <div class="header-left">
+
+
+                            <h2>
+
+                                Invoice Information
+
+                            </h2>
+
+                        </div>
+
+                        <div class="header-right">
+
+                                    <span class="status-badge success">
+
+                                        {{ invoice.status }}
+
+                                    </span>
+
+                        </div>
+
+                    </div>
+                    <div class="card-divider"></div>
+
+                    <p><strong>Invoice Number:</strong> {{ invoice.invoice_number }}</p>
+                    <p><strong>Buyer:</strong> {{ invoice.buyer }}</p>
+                    <p><strong>Industry:</strong> {{ invoice.industry }}</p>
+                    <p><strong>Due Date:</strong> {{ invoice.due_date }}</p>
+                    <p><strong>Status:</strong><span id="invoice-status" class="status-open">{{ invoice.status }}</span>
+                    </p>
+                </div>
+
+
+                <!-- CANTON PRIVACY -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+
+                        <div class="header-left">
+
+
+                            <h2>
+
+                                Canton Privacy Layer
+
+                            </h2>
+
+                        </div>
+
+                        <div class="header-right">
+
+                                <span class="status-badge private">
+
+                                Protected
+
+                                </span>
+
+                        </div>
+
+                    </div>
+                    <div class="card-divider"></div>
+
+                    <p><strong>Privacy Status:</strong> {{ invoice.privacy_status }}</p>
+                    <p><strong>Visibility:</strong> {{ invoice.visibility }}</p>
+                    <p><strong>Private Ledger:</strong> {{ invoice.private_ledger_id }}</p>
+                    <p>{{ privacy_message }}</p>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="dashboard-right">
+
+                <!-- AI UNDERWRITER PANEL -->
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div class="header-left">
+
+
+                            <h2>
+
+                                Canton Privacy Layer
+
+                            </h2>
+
+                        </div>
+
+                        <div class="header-right">
+
+                                <span class="status-badge private">
+
+                                Protected
+
+                                </span>
+
+                        </div>
+
+                    </div>
+                    <div class="card-divider"></div>
+
+                    <p><strong>Risk Score:</strong> {{ invoice.risk_score }}</p>
+                    <p><strong>Grade:</strong> {{ invoice.grade }}</p>
+                    <p><strong>Recommended APR:</strong> {{ invoice.apr }}%</p>
+                    <p><strong>Fraud Probability:</strong> {{ invoice.fraud_probability }}%</p>
+
+                </div>
+                <div class="module-footer">
+
+                    <div>
+
+                        Generated by OpenRouter AI
+
+                    </div>
+
+                    <div>
+
+                        Updated just now
+
+                    </div>
+
+                </div>
+
+                <!-- ===================================== -->
+                <!-- INSTITUTIONAL CREDIT MEMORANDUM -->
+                <!-- ===================================== -->
+
+                <div class="dashboard-card">
+
+
+                    <div class="card-divider"></div>
+                    <h3 class="section-title">
+
+
+                        Institutional Credit Memorandum
+
+                    </h3>
+
+                    <div class="ai-badge">
+                        Live AI Analysis
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <div class="memo-report-header">
+
+                        <div>
+
+                            <h2>Institutional Credit Assessment</h2>
+
+                            <p>
+                                AI-generated underwriting memorandum for private credit investors
+                            </p>
+
+                        </div>
+
+                        <div class="memo-status">
+
+                                    <span class="memo-live">
+
+                                        ● LIVE
+
+                                    </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="memo-meta">
+
+                        <div>
+
+                            <small>Generated By</small>
+
+                            <strong>OpenRouter AI</strong>
+
+                        </div>
+
+                        <div>
+
+                            <small>Model</small>
+
+                            <strong>{{ model_name }}</strong>
+
+                        </div>
+
+                        <div>
+
+                            <small>Confidence</small>
+
+                            <strong id="confidence-score">--</strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="memo-divider"></div>
+
+                    <div
+                            id="memo-output"
+                            class="memo-output">
+
+                        <div class="empty-state">
+
+                            Preparing AI analysis...
+
+                        </div>
+
+                    </div>
+
+                    <div class="dashboard-card">
+
+                        <h3>
+
+                            AI Invoice Summary
+
+                        </h3>
+
+                        <p>
+
+                            {{ invoice.ai_summary }}
+
+                        </p>
+
+                    </div>
+
+                    <div class="module-footer">
+
+                        <div>
+
+                            Generated by OpenRouter AI
+
+                        </div>
+
+                        <div>
+
+                            Updated just now
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===================================== -->
+                <!-- COMMITTEE REVIEW -->
+                <!-- ===================================== -->
+
+                <div class="dashboard-card">
+
+                    <!-- ========================================= -->
+                    <!-- INVESTMENT COMMITTEE REVIEW -->
+                    <!-- ========================================= -->
+
+                    <div
+                            id="committee-review"
+                            class="committee-review hidden">
+
+                        <h3 class="section-title">
+
+
+                            Investment Committee Review
+
+                        </h3>
+
+                        <div class="card-divider"></div>
+
+                        <div
+                                id="committee-log"
+                                class="timeline">
+
+                        </div>
+
+                        <div class="committee-progress">
+
+                            <div
+                                    id="committee-progress-fill"
+                                    class="committee-progress-fill">
+
+                            </div>
+
+                        </div>
+
+                        <div
+                                id="committee-progress-text"
+                                class="committee-progress-text">
+
+                            <div class="empty-state">
+
+                                Preparing AI analysis...
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <h2 class="section-title">
+
+                        Investment Committee
+
+                    </h2>
+
+
+                    <div class="module-footer">
+
+                        <div>
+
+                            Investment Committee
+
+                        </div>
+
+                        <div>
+
+                            Live Review
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===================================== -->
+                <!-- INVESTMENT COMMITTEE -->
+                <!-- ===================================== -->
+
+                <div
+                        class="dashboard-card committee-panel hidden"
+                        id="committee-panel">
+
+
+                    <div class="card-divider"></div>
+
+
+                    <!-- ===========================
+                    Committee Members
+                    =========================== -->
+
+                    <div class="committee-section">
+
+                        <h4 class="module-title">Committee Members</h4>
+
+                        <div
+                                id="committee-members"
+                                class="committee-members">
+
+                        </div>
+
+                    </div>
+
+                    <!-- ===========================
+                    Committee Vote
+                    =========================== -->
+
+                    <div class="committee-section">
+
+                        <h4 class="module-title">Committee Voting</h4>
+
+                        <div class="vote-progress">
+
+                            <div
+                                    id="vote-bar"
+                                    class="vote-bar">
+
+                            </div>
+
+                        </div>
+
+                        <div
+                                id="vote-percent"
+                                class="vote-percent">
+
+                            0%
+
+                        </div>
+
+                    </div>
+                    <!-- ===========================
+                Policy Validation
+                =========================== -->
+
+                    <div class="committee-section">
+
+                        <h4 class="module-title">Policy Validation</h4>
+
+                        <div
+                                id="portfolio-checks"
+                                class="committee-members">
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ===========================
+                    Metrics
+                    =========================== -->
+
+                    <div class="committee-section">
+
+                        <h4 class="module-title">Investment Metrics</h4>
+
+                        <div class="metrics-grid">
+
+                            <div class="metric-card">
+
+                                <small>
+
+                                    Investment
+
+                                </small>
+
+                                <strong id="committee-investment">
+
+                                    --</strong>
+
+                            </div>
+
+                            <div>
+
+                                <small>Expected Yield</small>
+
+                                <strong id="committee-yield">
+
+                                    --</strong>
+
+                            </div>
+
+                            <div class="metric-card">
+
+                                <small>Exposure</small>
+
+                                <strong id="committee-exposure">
+
+                                    --</strong>
+
+                            </div>
+
+                            <div class="metric-card">
+
+                                <small>Portfolio Bucket</small>
+
+                                <strong id="committee-bucket">
+
+                                    --</strong>
+
+                            </div>
+
+                            <div class="metric-card">
+
+                                <small>AI Confidence</small>
+
+                                <strong id="committee-confidence">
+
+                                    --</strong>
+
+                            </div>
+
+                            <div class="metric-card">
+
+                                <small>Risk Grade</small>
+
+                                <strong id="committee-grade">
+
+                                    --</strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ===========================
+                    Final Recommendation
+                    =========================== -->
+
+                    <div class="committee-section">
+
+                        <h4 class="module-title">Committee Recommendation</h4>
+
+                        <div
+                                id="committee-decision"
+                                class="committee-decision">
+
+                            <div class="empty-state">
+
+                                Preparing AI analysis...
+
+                            </div>
+
+                        </div>
+
+                        <div
+                                id="committee-notes"
+                                class="committee-notes">
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="module-footer">
+
+            <div>
+
+                AI Committee
+
+            </div>
+
+            <div>
+
+                Institutional Voting Complete
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- ========================================= -->
+<!-- PORTFOLIO ALLOCATION ENGINE -->
+<!-- ========================================= -->
+
+<div
+        id="allocation-panel"
+        class="dashboard-card hidden">
+
+    <h2 class="section-title">
+
+        Portfolio Allocation Engine
+
+    </h2>
+
+    <div class="card-divider"></div>
+
+    <div class="allocation-progress">
+
+        <div
+                id="allocation-bar"
+                class="allocation-bar">
+
+        </div>
+
+    </div>
+
+    <p
+            id="allocation-status">
+
+    <div class="empty-state">
+
+        Preparing AI analysis...
+
+    </div>
+
+    </p>
+
+    <div class="allocation-grid">
+
+        <div>
+
+            <small>Portfolio</small>
+
+            <strong id="allocation-portfolio">
+
+                --
+
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Current Exposure</small>
+
+            <strong id="allocation-current">
+
+                --
+
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Post Allocation</small>
+
+            <strong id="allocation-after">
+
+                --
+
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Expected Yield</small>
+
+            <strong id="allocation-yield">
+
+                --
+
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Remaining Capacity</small>
+
+            <strong id="allocation-capacity">
+
+                --
+
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Diversification</small>
+
+            <strong id="allocation-diversification">
+
+                --
+
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="card-divider"></div>
+
+    <div
+            id="allocation-commentary"
+            class="memo-output">
+
+        Waiting for portfolio construction...
+
+    </div>
+
+    <div class="module-footer">
+
+        <div>
+
+            Generated by OpenRouter AI
+
+        </div>
+
+        <div>
+
+            Updated just now
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ========================================= -->
+<!-- LIVE PORTFOLIO DASHBOARD -->
+<!-- ========================================= -->
+
+<div
+        id="portfolio-dashboard"
+        class="dashboard-card hidden">
+
+    <div class="card-header">
+
+        <div class="header-left">
+
+            <h2>
+
+                Live Portfolio Dashboard
+
+            </h2>
+
+        </div>
+
+        <div class="header-right">
+
+            <span class="status-badge">
+
+                LIVE
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="card-divider"></div>
+
+    <div class="portfolio-kpis">
+
+        <div class="metric-card">
+
+            <small>Total AUM</small>
+
+            <strong id="portfolio-aum">
+
+                --
+
+            </strong>
+
+        </div>
+
+        <div class="metric-card">
+
+            <small>Deployment</small>
+
+            <strong id="portfolio-deployed">
+
+                --
+
+            </strong>
+
+        </div>
+
+        <div class="metric-card">
+
+            <small>Average Yield</small>
+
+            <strong id="portfolio-yield">
+
+                --
+
+            </strong>
+
+        </div>
+
+        <div class="metric-card">
+
+            <small>Portfolio Risk</small>
+
+            <strong id="portfolio-risk">
+
+                --
+
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="module-footer">
+
+        <div>
+
+            Portfolio Construction Engine
+
+        </div>
+
+        <div>
+
+            Updated Live
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card-divider"></div>
+
+<h4>
+
+    Current Leaderboard
+
+</h4>
+
+<div
+        id="auction-leaderboard"
+        class="auction-leaderboard">
+
+</div>
+
+<!-- ========================================= -->
+<!-- LIVE AUCTION ROOM -->
+<!-- ========================================= -->
+
+<div
+        id="auction-room"
+        class="dashboard-card hidden">
+
+    <div class="card-header">
+
+        <div class="header-left">
+
+            <h2>
+
+                Live Institutional Auction
+
+            </h2>
+
+
+            <div class="auction-header">
+
+                <div>
+
+                    <strong>Private Institutional Auction</strong>
+
+                </div>
+
+                <div
+                        id="auction-countdown"
+                        class="auction-countdown">
+
+                    Closing in 30s
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <span class="status-badge live">
+
+                LIVE
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="card-divider"></div>
+
+    <div
+            id="auction-banner"
+            class="auction-banner">
+
+        Waiting for first institution...
+
+    </div>
+
+    <div
+            id="auction-feed"
+            class="auction-feed">
+
+    </div>
+
+
+    <div class="module-footer">
+
+        <div>
+
+            Canton Private Marketplace
+
+        </div>
+
+        <div>
+
+            Real-Time Bid Matching
+
+        </div>
+
+    </div>
+
+
+    <div
+            id="auction-reason"
+            class="committee-notes">
+
+        Waiting for auction...
+
+    </div>
+
+</div>
+
+<!-- Institutional Decision Panel -->
+
+
+<div
+        id="investment-panel"
+        class="dashboard-card hidden">
+
+    <div class="card-header">
+
+        <div class="header-left">
+
+            <h2>
+
+                Institutional Funding
+
+            </h2>
+
+        </div>
+
+        <div class="header-right">
+
+        <span class="status-badge">
+
+            Awaiting Funding
+
+        </span>
+
+        </div>
+
+    </div>
+
+    <div class="card-divider"></div>
+
+    <div class="decision-grid">
+
+        <div class="decision-card">
+
+            <small>Recommended Exposure</small>
+
+            <h2>
+                {{ invoice.amount }}
+            </h2>
+
+        </div>
+
+        <div class="decision-card">
+
+            <small>Expected APR</small>
+
+            <h2>
+                {{ invoice.apr }}%
+            </h2>
+
+        </div>
+
+        <div class="decision-card">
+
+            <small>Confidence</small>
+
+            <h2>
+                {{ credit_memo.confidence }}%
+            </h2>
+
+        </div>
+
+    </div>
+
+    <div class="recommendation-banner">
+
+        ★★★★★ STRONG BUY
+
+    </div>
+
+    <div class="canton-banner">
+
+
+        Settlement secured by Canton Privacy Network
+
+    </div>
+
+    <button
+            id="fund-btn"
+            class="btn btn-primary">
+
+        Fund Invoice
+
+    </button>
+
+    <!-- ===========================
+Canton Settlement Console
+=========================== -->
+
+    <div
+            id="settlement-console"
+            class="settlement-console">
+
+        <div id="settlement-feed">
+
+        </div>
+
+        <div
+                id="ledger-terminal"
+                class="ledger-terminal hidden">
+
+            <h4>
+
+                Canton Private Ledger
+
+            </h4>
+
+            <div class="ledger-grid">
+
+                <div>
+
+                    <small>Ledger ID</small>
+
+                    <strong id="ledger-id">
+
+                        --
+
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <small>Settlement Hash</small>
+
+                    <strong id="ledger-hash">
+
+                        --
+
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <small>Settlement Time</small>
+
+                    <strong id="ledger-time">
+
+                        --
+
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <small>Ownership Token</small>
+
+                    <strong id="ledger-token">
+
+                        --
+
+                    </strong>
+
+                </div>
+
+            </div>
+            <div id="ledger-feed" class="ledger-feed"></div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- LIVE ACTIVITY FEED -->
+    <!-- ========================================= -->
+
+    <div
+            class="dashboard-card">
+
+        <div class="card-header">
+
+            <div class="header-left">
+
+                <h2>
+
+                    Live Activity Feed
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div class="card-divider"></div>
+
+        <div
+                id="activity-feed"
+                class="activity-feed">
+
+        </div>
+
+        <div class="module-footer">
+
+            <div>
+
+                System Audit Log
+
+            </div>
+
+            <div>
+
+                Live
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+            id="settlement-receipt"
+            class="settlement-receipt hidden">
+
+    </div>
+
+    <div class="module-footer">
+
+        <div>
+
+            Generated by OpenRouter AI
+
+        </div>
+
+        <div>
+
+            Updated just now
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+</div>
+<!-- END AI PANEL -->
+
+</div>
+<!-- END RIGHT COLUMN -->
+
+</div>
+<!-- END DASHBOARD COLUMNS -->
+
+</div>
+<!-- END DASHBOARD CONTENT -->
+
+</div>
+<!-- END MAIN -->
+
+</div>
+<!-- END CONTAINER -->
+
+<!-- JS PIPELINE -->
+<script>
+    /* ===========================================================
+   1. GLOBAL VARIABLES
+=========================================================== */
+
+    const steps = [
+        "Receiving encrypted invoice...",
+        "Decrypting authorized fields...",
+        "Extracting invoice metadata...",
+        "Calculating credit score...",
+        "Running fraud detection...",
+        "Evaluating industry outlook...",
+        "Analyzing buyer risk...",
+        "Contacting OpenRouter AI...",
+        "Generating institutional credit memo...",
+        "Finalizing report..."
+    ];
+
+    let index = 0;
+
+    const loading = document.getElementById("loading-step");
+    const dashboard = document.getElementById("dashboard-content");
+
+    /* ===========================================================
+   2. APPLICATION STARTUP
+=========================================================== */
+    const interval = setInterval(() => {
+
+        if (index < steps.length) {
+
+            loading.innerHTML = "✔ " + steps[index];
+            index++;
+
+        } else {
+
+            clearInterval(interval);
+
+            document.getElementById("ai-loading").style.display = "none";
+
+            dashboard.style.display = "block";
+
+            streamMemo();
+
+        }
+
+
+    }, 700);
+
+    /* ===========================================================
+   4. COMMITTEE REVIEW PIPELINE
+=========================================================== */
+
+    async function animateCommitteeReview(){
+
+        const review =
+            document.getElementById("committee-review");
+
+        const log =
+            document.getElementById("committee-log");
+
+        const progress =
+            document.getElementById("committee-progress-fill");
+
+        const progressText =
+            document.getElementById("committee-progress-text");
+
+        review.classList.remove("hidden");
+
+        log.innerHTML = "";
+
+        progress.style.width = "0%";
+
+        const steps = [
+
+            "Receiving underwriting memorandum",
+
+            "Reviewing credit assessment",
+
+            "Checking portfolio concentration",
+
+            "Running stress simulations",
+
+            "Verifying Canton settlement",
+
+            "Validating AI confidence",
+
+            "Committee voting"
+
+        ];
+
+        for(let i=0;i<steps.length;i++){
+
+            const row = document.createElement("div");
+
+
+
+row.className =
+    "timeline-item";
+
+            row.innerHTML = `
+
+
+
+<div class="timeline-content">
+
+<div class="timeline-title">
+
+${steps[i]}
+
+</div>
+
+<div class="timeline-subtitle">
+
+AI Investment Committee Review
+
+</div>
+
+</div>
+
+`;
+
+    await animateCommitteeMembers();
+
+    await animatePolicyChecks();
+
+    await animateCommitteeVote();
+
+    await loadCommitteeDecision();
+
+    await loadPortfolioAllocation();
+
+    await loadPortfolioDashboard();
+
+    await animateAuctionRoom();
+
+    /* ===========================================================
+   5. COMMITTEE MEMBERS
+=========================================================== */
+
+    async function animateCommitteeMembers(){
+
+        const container =
+            document.getElementById(
+                "committee-members"
+            );
+
+        container.innerHTML = "";
+
+        const members = [
+
+            {
+                initials:"LU",
+                name:"Lead Underwriter",
+                status:"Credit Approved"
+            },
+
+            {
+                initials:"RO",
+                name:"Chief Risk Officer",
+                status:"Risk Accepted"
+            },
+
+            {
+                initials:"PM",
+                name:"Portfolio Manager",
+                status:"Allocation Approved"
+            },
+
+            {
+                initials:"CS",
+                name:"Canton Settlement Officer",
+                status:"Privacy Verified"
+            }
+
+        ];
+
+        for(const member of members){
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "committee-member";
+
+            card.innerHTML = `
+
+    <div class="member-left">
+
+    <div class="member-avatar">
+
+    ${member.initials}
+
+    </div>
+
+    <div>
+
+    <strong>
+
+    ${member.name}
+
+    </strong>
+
+    <br>
+
+    <small>
+
+    ${member.status}
+
+    </small>
+
+    </div>
+
+    </div>
+
+    <div class="member-status">
+
+    Approved
+
+    </div>
+
+    `;
+
+            container.appendChild(card);
+
+            await new Promise(r=>setTimeout(r,600));
+
+        }
+
+    }
+
+    async function animateCommitteeMembers(){
+
+        const container =
+            document.getElementById(
+                "committee-members"
+            );
+
+        container.innerHTML = "";
+
+        const members = [
+
+            {
+                initials:"LU",
+                name:"Lead Underwriter",
+                status:"Credit Approved"
+            },
+
+            {
+                initials:"RO",
+                name:"Chief Risk Officer",
+                status:"Risk Accepted"
+            },
+
+            {
+                initials:"PM",
+                name:"Portfolio Manager",
+                status:"Allocation Approved"
+            },
+
+            {
+                initials:"CS",
+                name:"Canton Settlement Officer",
+                status:"Privacy Verified"
+            }
+
+        ];
+
+        for(const member of members){
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "committee-member";
+
+            card.innerHTML = `
+
+    <div class="member-left">
+
+    <div class="member-avatar">
+
+    ${member.initials}
+
+    </div>
+
+    <div>
+
+    <strong>
+
+    ${member.name}
+
+    </strong>
+
+    <br>
+
+    <small>
+
+    ${member.status}
+
+    </small>
+
+    </div>
+
+    </div>
+
+    <div class="member-status">
+
+    Approved
+
+    </div>
+
+    `;
+
+            container.appendChild(card);
+
+            await new Promise(r=>setTimeout(r,600));
+
+        }
+
+    }
+
+    /* ===========================================================
+   7. COMMITTEE VOTING
+=========================================================== */
+
+    async function animateCommitteeVote(){
+
+        const bar =
+            document.getElementById(
+                "vote-bar"
+            );
+
+        const percent =
+            document.getElementById(
+                "vote-percent"
+            );
+
+        for(let i=0;i<=100;i+=5){
+
+            bar.style.width =
+                i + "%";
+
+            percent.innerHTML =
+                i + "%";
+
+            await new Promise(r=>setTimeout(r,80));
+
+        }
+
+    }
+
+    /* ===========================================================
+   9. PORTFOLIO ALLOCATION ENGINE
+=========================================================== */
+
+    async function animatePortfolioAllocation(){
+
+        const panel =
+            document.getElementById("allocation-panel");
+
+        panel.classList.remove("hidden");
+
+        const bar =
+            document.getElementById("allocation-bar");
+
+        const status =
+            document.getElementById("allocation-status");
+
+        const steps=[
+
+            "Selecting portfolio...",
+
+            "Checking concentration limits...",
+
+            "Running allocation model...",
+
+            "Optimizing expected yield...",
+
+            "Allocation approved."
+
+        ];
+
+        for(let i=0;i<steps.length;i++){
+
+            status.innerHTML=steps[i];
+
+            bar.style.width=((i+1)*20)+"%";
+
+            await new Promise(resolve=>
+                setTimeout(resolve,900)
+            );
+
+        }
+
+        document.getElementById(
+            "allocation-portfolio"
+        ).innerHTML="Trade Receivables Fund";
+
+        document.getElementById(
+            "allocation-current"
+        ).innerHTML="21.4%";
+
+        document.getElementById(
+            "allocation-after"
+        ).innerHTML="24.1%";
+
+        document.getElementById(
+            "allocation-yield"
+        ).innerHTML="11.8%";
+
+        document.getElementById(
+            "allocation-capacity"
+        ).innerHTML="$4.8M";
+
+        document.getElementById(
+            "allocation-diversification"
+        ).innerHTML="PASS";
+
+        logActivity(
+
+"Portfolio allocation completed.",
+
+"success"
+
+);
+
+    }
+
+    <div class="committee-label">
+
+    ${steps[i]}
+
+    </div>
+
+    `;
+
+            log.appendChild(row);
+
+            progress.style.width =
+                ((i)/steps.length*100)+"%";
+
+            progressText.innerHTML =
+                steps[i];
+
+            await new Promise(resolve=>
+                setTimeout(resolve,900)
+            );
+
+            row.querySelector(".committee-icon")
+                .classList.remove("loading");
+
+            row.querySelector(".committee-icon")
+                .classList.add("success");
+
+            row.querySelector(".committee-icon")
+                .innerHTML = `
+
+    <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2">
+
+    <path
+    d="M5 13l4 4L19 7"/>
+
+    </svg>
+
+    `;
+
+        }
+
+        progress.style.width="100%";
+
+        progressText.innerHTML =
+            "Investment Committee Approval Complete";
+
+        await new Promise(resolve=>
+            setTimeout(resolve,700)
+        );
+
+        logActivity(
+
+"Investment Committee approved the transaction.",
+
+"success"
+
+);
+
+        await loadCommitteeDecision();
+
+    await animatePortfolioAllocation();
+
+    document
+        .getElementById("investment-panel")
+        .classList
+        .remove("hidden");
+
+    }
+
+    /* ===========================================================
+   8. LOAD FINAL COMMITTEE DECISION
+=========================================================== */
+
+    async function loadCommitteeDecision(){
+
+        const response = await fetch(
+
+            "/committee_decision/{{ invoice.id }}"
+
+        );
+
+        const data = await response.json();
+
+        document.getElementById(
+            "committee-decision"
+        ).innerHTML = data.decision;
+
+        document.getElementById(
+            "committee-investment"
+        ).innerHTML = data.investment;
+
+        document.getElementById(
+            "committee-yield"
+        ).innerHTML = data.yield;
+
+        document.getElementById(
+            "committee-exposure"
+        ).innerHTML = data.exposure;
+
+        document.getElementById(
+            "committee-bucket"
+        ).innerHTML = data.bucket;
+
+        document.getElementById(
+            "committee-confidence"
+        ).innerHTML = data.confidence;
+
+
+      document.getElementById(
+        "committee-members"
+    ).innerHTML = `
+
+    <div class="committee-member">
+
+        <div class="member-left">
+
+            <div class="member-avatar">
+
+                AI
+
+            </div>
+
+            <div>
+
+                <div class="member-title">
+
+                    Lead Underwriter AI
+
+                </div>
+
+                <div class="member-description">
+
+                    Credit quality, pricing and repayment analysis
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="member-approved">
+
+            APPROVED
+
+        </div>
+
+    </div>
+
+    <div class="committee-member">
+
+        <div class="member-left">
+
+            <div class="member-avatar">
+
+                AI
+
+            </div>
+
+            <div>
+
+                <div class="member-title">
+
+                    Risk Officer AI
+
+                </div>
+
+                <div class="member-description">
+
+                    Portfolio limits and fraud validation
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="member-approved">
+
+            APPROVED
+
+        </div>
+
+    </div>
+
+    <div class="committee-member">
+
+        <div class="member-left">
+
+            <div class="member-avatar">
+
+                AI
+
+            </div>
+
+            <div>
+
+                <div class="member-title">
+
+                    Portfolio Manager AI
+
+                </div>
+
+                <div class="member-description">
+
+                    Allocation and diversification review
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="member-approved">
+
+            APPROVED
+
+        </div>
+
+    </div>
+
+    `;
+
+    document.getElementById(
+        "portfolio-checks"
+    ).innerHTML = `
+
+    <div class="check-row">
+
+    <div>
+
+    Exposure Limit
+
+    </div>
+
+    <div class="check-pass">
+
+    PASS
+
+    </div>
+
+    </div>
+
+    <div class="check-row">
+
+    <div>
+
+    Sector Diversification
+
+    </div>
+
+    <div class="check-pass">
+
+    PASS
+
+    </div>
+
+    </div>
+
+    <div class="check-row">
+
+    <div>
+
+    Liquidity Requirement
+
+    </div>
+
+    <div class="check-pass">
+
+    PASS
+
+    </div>
+
+    </div>
+
+    <div class="check-row">
+
+    <div>
+
+    AI Confidence Threshold
+
+    </div>
+
+    <div class="check-pass">
+
+    PASS
+
+    </div>
+
+    </div>
+
+    <div class="check-row">
+
+    <div>
+
+    Canton Settlement Ready
+
+    </div>
+
+    <div class="check-pass">
+
+    PASS
+
+    </div>
+
+    </div>
+
+    `;
+
+        document.getElementById(
+            "committee-notes"
+        ).innerHTML = data.notes;
+
+        document
+            .getElementById("committee-panel")
+            .classList.remove("hidden");
+
+
+        const panel =
+            document.getElementById("committee-panel");
+
+        panel.classList.remove("hidden");
+
+        panel.style.opacity = 0;
+
+        panel.style.transform = "translateY(30px)";
+
+        setTimeout(()=>{
+
+            panel.style.transition =
+                ".6s";
+
+            panel.style.opacity = 1;
+
+            panel.style.transform =
+                "translateY(0)";
+
+        },100);
+
+    }
+
+    async function loadPortfolioAllocation(){
+
+    const response = await fetch(
+
+        "/portfolio_allocation/{{ invoice.id }}"
+
+    );
+
+    const data = await response.json();
+
+    document.getElementById(
+
+        "allocation-portfolio"
+
+    ).innerHTML = data.portfolio;
+
+    document.getElementById(
+
+        "allocation-current"
+
+    ).innerHTML = data.weight;
+
+    document.getElementById(
+
+        "allocation-after"
+
+    ).innerHTML = data.sector_weight;
+
+    document.getElementById(
+
+        "allocation-yield"
+
+    ).innerHTML = data.yield;
+
+    document.getElementById(
+
+        "allocation-capacity"
+
+    ).innerHTML = data.capacity;
+
+    document.getElementById(
+
+        "allocation-diversification"
+
+    ).innerHTML = data.diversification;
+
+    document.getElementById(
+
+        "allocation-commentary"
+
+    ).innerHTML = marked.parse(
+
+        data.commentary
+
+    );
+
+    document
+
+        .getElementById(
+
+            "allocation-panel"
+
+        )
+
+        .classList
+
+        .remove("hidden");
+
+        const bar =
+
+document.getElementById(
+
+"allocation-bar"
+
+);
+
+bar.style.width = "0%";
+
+setTimeout(()=>{
+
+bar.style.width = "100%";
+
+},300);
+
+}
+
+async function loadPortfolioDashboard(){
+
+    const response = await fetch(
+
+        "/portfolio_dashboard/{{ invoice.id }}"
+
+    );
+
+    const data = await response.json();
+
+    document.getElementById(
+
+        "portfolio-aum"
+
+    ).innerHTML = data.aum;
+
+    document.getElementById(
+
+        "portfolio-deployed"
+
+    ).innerHTML = data.deployment;
+
+    document.getElementById(
+
+        "portfolio-yield"
+
+    ).innerHTML = data.yield;
+
+    document.getElementById(
+
+        "portfolio-risk"
+
+    ).innerHTML = data.risk;
+
+    document
+
+        .getElementById(
+
+            "portfolio-dashboard"
+
+        )
+
+        .classList
+
+        .remove("hidden");
+
+}
+
+function startAuctionCountdown(){
+
+    let seconds = 30;
+
+    const timer =
+
+        document.getElementById(
+
+            "auction-countdown"
+
+        );
+
+    const interval = setInterval(()=>{
+
+        seconds--;
+
+        timer.innerHTML =
+
+            "Closing in " +
+
+            seconds +
+
+            "s";
+
+        if(seconds<=0){
+
+            clearInterval(interval);
+
+            timer.innerHTML =
+
+                "Auction Closed";
+
+        }
+
+    },1000);
+
+}
+
+function updateAuctionLeaderboard(bids){
+
+    const leaderboard = document.getElementById(
+        "auction-leaderboard"
+    );
+
+    leaderboard.innerHTML = "";
+
+    const ranked = [...bids].sort(
+
+        (a,b)=>
+
+        parseFloat(a.apr)-parseFloat(b.apr)
+
+    );
+
+    ranked.forEach((bid,index)=>{
+
+        const row = document.createElement("div");
+
+        row.className =
+            "leaderboard-row";
+
+        row.innerHTML = `
+
+<div>
+
+${index+1}. ${bid.institution}
+
+</div>
+
+<div>
+
+${bid.apr}%
+
+</div>
+
+`;
+
+        leaderboard.appendChild(row);
+
+    });
+
+}
+
+async function animateAuctionRoom(){
+
+    const joined = [];
+
+    const room =
+
+        document.getElementById(
+
+            "auction-room"
+
+        );
+
+    room.classList.remove("hidden");
+
+    logActivity(
+
+"Institutional auction opened.",
+
+"info"
+
+);
+
+
+
+    const feed =
+
+        document.getElementById(
+
+            "auction-feed"
+
+        );
+
+    feed.innerHTML="";
+
+    const response = await fetch(
+
+"/auction_room/{{ invoice.id }}"
+
+);
+
+const auction = await response.json();
+
+const bids = auction.bids;
+
+// ------------------------------------
+// Randomize institutional entry order
+// ------------------------------------
+
+const shuffledBids = [...bids].sort(
+
+    ()=>Math.random()-0.5
+
+);
+
+
+startAuctionCountdown(20);
+
+for(let i=0;i<shuffledBids.length;i++){
+
+    const row=document.createElement("div");
+
+    row.className="auction-row";
+
+    row.dataset.bank = shuffledBids[i].institution;
+
+    row.innerHTML=`
+
+<div>
+
+<div class="auction-bank">
+
+${shuffledBids[i].institution}
+
+</div>
+
+<div class="auction-time">
+
+${new Date().toLocaleTimeString()}
+
+</div>
+
+<small>
+
+Bid Amount
+
+$${Number(shuffledBids[i].amount).toLocaleString()}
+
+</small>
+
+</div>
+
+<div class="auction-apr">
+
+${shuffledBids[i].apr}%
+
+</div>
+
+<div>
+
+Confidence
+
+${shuffledBids[i].confidence}%
+
+</div>
+
+`;
+
+document.getElementById(
+
+"auction-banner"
+
+).innerHTML=
+
+`${shuffledBids[i].institution}
+
+has entered the auction.`;
+
+        feed.appendChild(row);
+
+        updateAuctionLeaderboard(bids);
+
+        const joinDelay =
+
+700+
+
+Math.random()*1800;
+
+await new Promise(
+
+resolve=>
+
+setTimeout(
+
+resolve,
+
+joinDelay
+
+)
+
+);
+
+        await new Promise(resolve=>{
+
+setTimeout(()=>{
+
+row.classList.add("show");
+
+resolve();
+
+},150);
+
+});
+
+    }
+
+    function startAuctionCountdown(seconds){
+
+    const timer = document.getElementById(
+        "auction-countdown"
+    );
+
+    let remaining = seconds;
+
+    timer.innerHTML =
+        remaining + "s";
+
+    const countdown = setInterval(()=>{
+
+        remaining--;
+
+        timer.innerHTML =
+            remaining + "s";
+
+        if(remaining<=0){
+
+            clearInterval(countdown);
+
+            timer.innerHTML =
+                "Auction Closed";
+
+        }
+
+    },1000);
+
+}
+
+    await new Promise(r=>setTimeout(r,1500));
+
+const randomBid = bids[
+    Math.floor(Math.random()*bids.length)
+];
+
+randomBid.apr = (
+    parseFloat(randomBid.apr) - 0.25
+).toFixed(2);
+
+const revise = document.createElement("div");
+
+revise.className = "auction-announcement";
+
+revise.innerHTML = `
+
+<strong>${randomBid.institution}</strong>
+improved its offer to
+<strong>${randomBid.apr}% APR</strong>
+
+`;
+
+feed.appendChild(revise);
+
+logActivity(
+
+`${bank.institution}
+
+revised its APR to
+
+${bank.apr}%`,
+
+"info"
+
+);
+
+for(
+
+let i=0;
+
+i<3;
+
+i++
+
+){
+
+await new Promise(
+
+resolve=>
+
+setTimeout(
+
+resolve,
+
+3000+
+
+Math.random()*2000
+
+)
+
+);
+
+const bank=
+
+shuffledBids[
+
+Math.floor(
+
+Math.random()*
+
+shuffledBids.length
+
+)
+
+];
+
+bank.apr=(
+
+parseFloat(bank.apr)-
+
+(
+
+Math.random()*0.35
+
+)
+
+).toFixed(2);
+
+document.getElementById(
+
+"auction-banner"
+
+).innerHTML=
+
+`${bank.institution}
+
+improved its offer
+
+to
+
+${bank.apr}% APR.`;
+
+updateAuctionLeaderboard(
+
+shuffledBids
+
+);
+
+}
+
+const withdrawn=
+
+shuffledBids.pop();
+
+document.getElementById(
+
+"auction-banner"
+
+).innerHTML=
+
+`${withdrawn.institution}
+
+withdrew from the auction.`;
+
+updateAuctionLeaderboard(
+
+shuffledBids
+
+);
+
+const responseWinner = await fetch(
+
+"/auction/finalize",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+bids:shuffledBids
+
+})
+
+}
+
+);
+
+const winner =
+
+await responseWinner.json();
+
+    await new Promise(r=>setTimeout(r,20000));
+
+    const rows =
+
+document.querySelectorAll(
+
+".auction-row"
+
+);
+
+rows.forEach(row=>{
+
+    if(
+
+        row.dataset.bank ===
+
+        winner.institution
+
+    ){
+
+        row.classList.add(
+
+            "auction-winning"
+
+        );
+
+    }
+
+});
+
+document.getElementById(
+
+document.getElementById(
+
+"auction-banner"
+
+).innerHTML=
+
+`🏆
+
+${winner.institution}
+
+won the institutional auction
+
+at
+
+${winner.apr}% APR.
+
+${winner.reason}`;
+
+logActivity(
+
+`${winner.institution}
+
+won the institutional auction
+
+at
+
+${winner.apr}% APR.`,
+
+"success"
+
+);
+
+    await new Promise(
+
+r=>setTimeout(r,1200)
+
+);
+
+document
+
+.getElementById(
+
+"investment-panel"
+
+)
+
+.classList.remove(
+
+"hidden"
+
+);
+
+}
+
+    /* ===========================================================
+   3. MEMO STREAMING
+=========================================================== */
+
+    async function streamMemo(){
+
+        while(true){
+
+        const {done,value} = await reader.read();
+
+        if(done){
+
+            break;
+
+        }
+
+        fullText += decoder.decode(value);
+
+        memo.innerHTML = marked.parse(fullText);
+
+        memo.scrollTop = memo.scrollHeight;
+
+        memo.scrollTop = memo.scrollHeight;
+
+    }
+
+    memo.innerHTML = marked.parse(fullText);
+
+    /* Memo finished */
+
+    logActivity(
+
+"AI underwriting memorandum completed.",
+
+"success"
+
+);
+
+    await animateCommitteeReview();
+
+    /* Show Investment Panel */
+
+    document
+        .getElementById("investment-panel")
+        .classList
+        .remove("hidden");
+    await animateCommitteeReview();
+
+            fullText += decoder.decode(value);
+
+            memo.textContent = fullText;
+
+
+
+            memo.scrollTop =
+                memo.scrollHeight;
+
+        }
+
+        memo.innerHTML = marked.parse(fullText);
+
+        // Memo finished.
+        // Reveal Investment Decision panel.
+
+        document
+            .getElementById("investment-panel")
+            .classList
+            .remove("hidden");
+
+    }
+
+
+
+    /* ===========================================================
+   10. FUNDING PROGRESS
+=========================================================== */
+
+    function animateFundingProgress(){
+
+        const fundingElement =
+            document.getElementById("funding-progress");
+
+        let current =
+            parseInt(fundingElement.innerHTML);
+
+        const target = 100;
+
+        const timer = setInterval(()=>{
+
+            if(current >= target){
+
+                fundingElement.innerHTML = "100%";
+
+                clearInterval(timer);
+
+                return;
+
+            }
+
+            current += Math.floor(Math.random()*4)+2;
+
+            if(current > target){
+
+                current = target;
+
+            }
+
+            fundingElement.innerHTML =
+                current + "%";
+
+        },180);
+
+    }
+
+    /*=================================
+LIVE ACTIVITY FEED
+=================================*/
+
+function logActivity(
+
+message,
+
+type="info"
+
+){
+
+const feed=
+
+document.getElementById(
+
+"activity-feed"
+
+);
+
+const row=
+
+document.createElement("div");
+
+row.className=
+
+"activity-item";
+
+const now=
+
+new Date()
+
+.toLocaleTimeString();
+
+row.innerHTML=`
+
+<div class="activity-time">
+
+${now}
+
+</div>
+
+<div class="activity-text activity-${type}">
+
+${message}
+
+</div>
+
+`;
+
+feed.prepend(row);
+
+setTimeout(()=>{
+
+row.classList.add("show");
+
+},100);
+
+}
+
+
+
+    /* ===========================
+       FUND INVOICE
+    =========================== */
+
+    async function fundInvoice(){
+
+    const button =
+
+        document.getElementById(
+
+            "fund-btn"
+
+        );
+
+    button.disabled = true;
+
+    button.innerHTML =
+
+        "Settling...";
+
+        logActivity(
+
+"Canton settlement initiated.",
+
+"info"
+
+);
+
+    const feed =
+
+        document.getElementById(
+
+            "settlement-feed"
+
+        );
+
+    feed.innerHTML="";
+
+    const steps=[
+
+"Authenticating borrower identity",
+
+"Authenticating winning institution",
+
+"Opening Canton private synchronization channel",
+
+"Validating encrypted invoice contract",
+
+"Creating Delivery-versus-Payment transaction",
+
+"Transferring institutional capital",
+
+"Issuing digital ownership token",
+
+"Recording immutable settlement",
+
+"Closing private ledger"
+
+];
+
+const feed =
+document.getElementById(
+"ledger-feed"
+);
+
+const logs=[
+
+"Encrypting settlement payload...",
+
+"Verifying participant signatures...",
+
+"Synchronizing Canton domains...",
+
+"Committing private ledger state...",
+
+"Generating ownership receipt...",
+
+"Final consensus reached."
+
+];
+
+feed.innerHTML="";
+
+for(const log of logs){
+
+await new Promise(r=>
+
+setTimeout(r,600)
+
+);
+
+feed.innerHTML +=
+
+"> " + log + "<br>";
+
+feed.scrollTop =
+feed.scrollHeight;
+
+}
+
+    for(const step of steps){
+
+        const row=document.createElement(
+
+            "div"
+
+        );
+
+        row.className=
+
+            "settlement-event";
+
+        row.innerHTML=`
+
+<div class="settlement-icon">
+
+🔒
+
+</div>
+
+<div class="settlement-content">
+
+<div class="settlement-title">
+
+${step}
+
+</div>
+
+<div class="settlement-time">
+
+${new Date().toLocaleTimeString()}
+
+</div>
+
+</div>
+
+`;
+document.getElementById(
+
+"auction-banner"
+
+).innerHTML=
+
+`${shuffledBids[i].institution}
+
+has entered the auction.`;
+
+        feed.appendChild(row);
+
+        logActivity(
+
+`${shuffledBids[i].institution}
+
+submitted a financing proposal.`,
+
+"info"
+
+);
+
+        await new Promise(r=>
+
+            setTimeout(r,900)
+
+        );
+
+        row.classList.add("show");
+
+    }
+
+    await fetch(
+
+        "/fund_invoice/{{ invoice.id }}",
+
+        {
+
+            method:"POST"
+
+        }
+
+    );
+
+    button.innerHTML=
+
+        "✓ Settlement Complete";
+
+        const ledgerId =
+"LED-" +
+crypto.randomUUID()
+.substring(0,8)
+.toUpperCase();
+
+const hash =
+crypto.randomUUID()
+.replace(/-/g,"")
+.substring(0,32);
+
+const token =
+"NFT-" +
+Math.floor(
+Math.random()*99999999
+);
+
+document
+.getElementById("ledger-id")
+.innerHTML = ledgerId;
+
+document
+.getElementById("ledger-hash")
+.innerHTML = hash;
+
+document
+.getElementById("ledger-token")
+.innerHTML = token;
+
+document
+.getElementById("ledger-time")
+.innerHTML =
+new Date()
+.toLocaleString();
+
+document
+.getElementById("ledger-terminal")
+.classList
+.remove("hidden");
+
+    button.style.background=
+
+        "#16A34A";
+
+    const badge =
+
+document.getElementById(
+
+"invoice-status"
+
+);
+
+badge.innerHTML=
+
+"Funded";
+
+badge.classList.remove(
+
+"status-open"
+
+);
+
+badge.classList.add(
+
+"status-funded"
+
+);
+
+    animateFundingProgress();
+
+    const receipt=
+
+document.getElementById(
+
+"settlement-receipt"
+
+);
+
+receipt.classList.remove(
+
+"hidden"
+
+);
+
+receipt.innerHTML=`
+
+<h3>
+
+Settlement Receipt
+
+</h3>
+
+<p>
+
+Invoice
+
+<strong>
+
+{{ invoice.invoice_number }}
+
+</strong>
+
+</p>
+
+<p>
+
+Winning Institution
+
+<strong>
+
+${document.querySelector(".auction-winning .auction-bank").innerText}
+
+</strong>
+
+</p>
+
+<p>
+
+Settlement Network
+
+<strong>
+
+Canton Network
+
+</strong>
+
+</p>
+
+<p>
+
+Status
+
+<strong>
+
+COMPLETED
+
+</strong>
+
+</p>
+
+`;
+
+}
+
+
+
+    /* ===========================================================
+   12. EVENT LISTENERS
+=========================================================== */
+
+    document
+        .getElementById("fund-btn")
+        .addEventListener(
+            "click",
+            fundInvoice
+        );
+
+    document.getElementById(
+
+"auction-reason"
+
+).innerHTML =
+
+auction.reason;
+
+    function updateLeaderboard(bids){
+
+    const board =
+
+    document.getElementById(
+
+        "auction-leaderboard"
+
+    );
+
+    board.innerHTML="";
+
+    bids
+
+    .sort(
+
+        (a,b)=>
+
+        a.apr-b.apr
+
+    )
+
+    .forEach((bid,index)=>{
+
+        board.innerHTML +=
+
+`
+
+<div>
+
+#${index+1}
+
+${bid.institution}
+
+—
+
+${bid.apr}%
+
+</div>
+
+`;
+
+    });
+
+}
+</script>
+
+</body>
+</html>

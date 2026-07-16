@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Institutional Investment Desk</title>
+
+    <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>AI InvoiceFlow</h2>
+
+        <a href="/lender_dashboard">Dashboard</a>
+
+        <a href="/marketplace">Marketplace</a>
+
+        <a href="#">Portfolio</a>
+
+        <a href="#">AI Insights</a>
+
+        <a href="#">Settings</a>
+
+        <a href="/logout">Logout</a>
+
+    </div>
+
+    <!-- Main -->
+
+    <div class="main">
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+
+Institutional Investment Desk
+
+</h1>
+
+<p>
+
+Monitor deployed capital and institutional returns.
+
+</p>
+
+            </div>
+
+        </div>
+
+        <!-- KPI Cards -->
+
+        <div class="stats-grid">
+
+            <div class="kpi-card">
+
+                <small>Total Investments</small>
+
+                <h2>{{ investments|length }}</h2>
+
+                <span>Live Positions</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>Expected Yield</small>
+
+                <h2>8.4%</h2>
+
+                <span>Portfolio Average</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>Total Capital</small>
+
+                <h2>$2.4M</h2>
+
+                <span>Committed</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <small>Active Deals</small>
+
+                <h2>31</h2>
+
+                <span>Open Positions</span>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+
+Investment Portfolio
+
+</h2>
+
+                    <p>
+
+Institutional positions
+
+</p>
+
+                </div>
+
+            </div>
+
+            <div class="card-divider"></div>
+
+            <table class="institution-table">
+
+                <tr>
+
+                    <th>Invoice</th>
+
+                    <th>Expected Return</th>
+
+                </tr>
+
+                {% for investment in investments %}
+
+                <tr>
+
+                    <td>{{ investment.invoice_id }}</td>
+
+                    <td>${{ investment.returns }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

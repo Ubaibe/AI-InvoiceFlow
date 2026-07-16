@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Upload Invoice</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='dashboard.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>AI InvoiceFlow</h2>
+
+        <a href="/command_center">Command Center</a>
+
+        <a href="/borrower_dashboard">Borrower Dashboard</a>
+
+        <a href="/lender_dashboard">Lender Dashboard</a>
+
+        <a href="/marketplace">Marketplace</a>
+
+        <a href="/upload_invoice">Upload Invoice</a>
+
+        <a href="/logout">Logout</a>
+
+    </div>
+
+
+    <!-- Main -->
+
+    <div class="main">
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>Upload Invoice</h1>
+
+                <p>
+
+                    Submit an invoice for AI underwriting and confidential institutional financing.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-body">
+
+            <div class="dashboard-left">
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>Invoice Information</h2>
+
+                            <p>
+
+                                Complete the invoice details below.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <form method="POST"
+                          enctype="multipart/form-data"
+                          class="invoice-form">
+
+                        <div class="form-grid">
+
+                            <input
+                                    type="text"
+                                    name="invoice_number"
+                                    placeholder="Invoice Number"
+                                    required>
+
+                            <input
+                                    type="text"
+                                    name="buyer"
+                                    placeholder="Buyer Name"
+                                    required>
+
+                            <input
+                                    type="number"
+                                    step="0.01"
+                                    name="amount"
+                                    placeholder="Invoice Amount"
+                                    required>
+
+                            <input
+                                    type="text"
+                                    name="industry"
+                                    placeholder="Industry"
+                                    required>
+
+                            <input
+                                    type="date"
+                                    name="due_date"
+                                    required>
+
+                            <input
+                                    type="file"
+                                    name="invoice_file"
+                                    accept=".pdf"
+                                    required>
+
+                        </div>
+
+                        <p class="upload-note">
+
+                            AI will generate an institutional underwriting memo while Canton protects confidential invoice information.
+
+                        </p>
+
+                        <button
+                                type="submit"
+                                class="btn btn-primary">
+
+                            Upload Invoice
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="dashboard-right">
+
+                <div class="dashboard-card">
+
+                    <h2>AI Underwriting</h2>
+
+                    <ul>
+
+                        <li>Credit Assessment</li>
+
+                        <li>Risk Analysis</li>
+
+                        <li>Recommended Grade</li>
+
+                        <li>Suggested APR</li>
+
+                        <li>Investment Memo</li>
+
+                    </ul>
+
+                </div>
+
+                <div class="dashboard-card">
+
+                    <h2>Canton Privacy</h2>
+
+                    <p>
+
+                        Uploaded invoices are stored privately before entering the institutional funding marketplace.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
