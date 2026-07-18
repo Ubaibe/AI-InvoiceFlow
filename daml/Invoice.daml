@@ -1,7 +1,5 @@
 module Invoice where
 
-import Daml.Script
-
 template Invoice
   with
     issuer : Party
@@ -27,36 +25,38 @@ template Invoice
 
     observer borrower
 
-    key (borrower, invoiceNumber) : (Party, Text)
-    maintainer key._1
-
     choice MarkSubmitted : ContractId Invoice
       controller borrower
       do
+        archive self
         create this with
           status = "Submitted"
 
     choice MarkApproved : ContractId Invoice
       controller issuer
       do
+        archive self
         create this with
           status = "Approved"
 
     choice MarkRejected : ContractId Invoice
       controller issuer
       do
+        archive self
         create this with
           status = "Rejected"
 
     choice MarkFunded : ContractId Invoice
       controller issuer
       do
+        archive self
         create this with
           status = "Funded"
 
     choice MarkSettled : ContractId Invoice
       controller issuer
       do
+        archive self
         create this with
           status = "Settled"
 
