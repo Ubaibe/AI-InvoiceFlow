@@ -1,0 +1,59 @@
+module InvestmentCommittee where
+
+import DA.Date
+import Auction
+
+template InvestmentCommittee
+  with
+    platform : Party
+    committee : Party
+    borrower : Party
+
+    invoiceNumber : Text
+
+    creditGrade : Text
+
+    recommendedAPR : Decimal
+
+    aiSummary : Text
+
+    approvedLimit : Decimal
+
+    committeeNotes : Text
+
+where
+
+  signatory platform, committee
+
+  observer borrower
+
+  choice Approve : ContractId Auction
+
+  controller committee
+
+  do
+
+      archive self
+
+      create Auction
+        with
+
+          platform = platform
+
+          borrower = borrower
+
+          invoiceNumber = invoiceNumber
+
+          approvedLimit = approvedLimit
+
+          reserveAPR = recommendedAPR
+
+          auctionStatus = "OPEN"
+
+  choice Reject : ()
+
+  controller committee
+
+  do
+
+      archive self

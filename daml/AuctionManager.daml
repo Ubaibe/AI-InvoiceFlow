@@ -1,0 +1,83 @@
+module AuctionManager where
+
+import Auction
+import Bid
+import Settlement
+
+template AuctionManager
+  with
+    platform : Party
+  where
+    signatory platform
+
+  choice CloseAuctionAutomatically
+    : ContractId Settlement
+
+    with
+
+        auctionCid : ContractId Auction
+
+        bids : [(ContractId Bid, Bid)]
+
+        settlementDate : Date
+
+    controller platform
+
+    do
+
+  lowestAPR
+    : ((ContractId Bid, Bid), [(ContractId Bid, Bid)])
+      -> (ContractId Bid, Bid)
+
+lowestAPR (best, []) = best
+
+lowestAPR (best, x::xs) =
+
+    if snd x .apr < snd best .apr
+
+    then lowestAPR (x, xs)
+
+    else lowestAPR (best, xs)
+
+  let winner =
+
+    case bids of
+
+        [] -> abort "No bids."
+
+        x::xs -> lowestAPR (x, xs)
+
+  mapA_
+
+    (\(cid, _) ->
+
+        if cid /= fst winner
+
+        then archive cid
+
+        else return ()
+
+    )
+
+    bids
+
+  archive auctionCid
+  create Settlement
+
+    with
+
+        platform = platform
+
+        borrower = snd winner.borrower
+
+        winningLender = snd winner.lender
+
+        invoiceNumber = snd winner.invoiceNumber
+
+        fundedAmount = snd winner.bidAmount
+
+        finalAPR = snd winner.apr
+
+        settlementDate = settlementDate
+
+        settlementStatus = "FUNDED"

@@ -1,0 +1,127 @@
+module Auction where
+
+import DA.List
+
+import Bid
+
+import Settlement
+
+template Auction
+
+  with
+
+      platform : Party
+
+      borrower : Party
+
+      invoiceNumber : Text
+
+      approvedLimit : Decimal
+
+      reserveAPR : Decimal
+
+where
+
+    signatory platform
+
+    observer borrower
+
+    choice OpenAuction : ContractId Auction
+
+      controller platform
+
+      do
+
+        create this
+
+    choice CloseAuction : ()
+
+      controller platform
+
+      do
+
+        archive self
+
+    choice SubmitBid : ContractId Bid
+
+    with
+
+        lender : Party
+
+        bidAmount : Decimal
+
+        apr : Decimal
+
+        message : Text
+
+    controller lender
+
+    do
+
+        create Bid
+
+            with
+
+                lender = lender
+
+                platform = platform
+
+                invoiceNumber = invoiceNumber
+
+                bidAmount = bidAmount
+
+                apr = apr
+
+                message = message
+
+  choice CloseAuction
+
+    : ContractId Settlement
+
+    with
+
+        winningBid : ContractId Bid
+
+        settlementDate : Date
+
+    controller platform
+
+    do
+
+        winner <- fetch winningBid
+
+        archive self
+
+        archive winningBid
+
+        create Settlement
+
+            with
+
+                platform = platform
+
+                borrower = borrower
+
+                winningLender = winner.lender
+
+                invoiceNumber = invoiceNumber
+
+                fundedAmount = winner.bidAmount
+
+                finalAPR = winner.apr
+
+                settlementDate = settlementDate
+
+                settlementStatus = "FUNDED"
+
+    lowestAPR : [Bid] -> Optional Bid
+
+lowestAPR bids =
+
+    case bids of
+
+        [] -> None
+
+        x::xs ->
+
+            Some (foldl (\best b -> if b.apr < best.apr then b else best) x xs)

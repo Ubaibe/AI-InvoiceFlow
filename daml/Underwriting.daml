@@ -1,0 +1,29 @@
+module Underwriting where
+
+template Underwriting
+
+  with
+
+    platform : Party
+
+    borrower : Party
+
+    invoiceNumber : Text
+
+    creditGrade : Text
+
+    riskScore : Decimal
+
+    recommendedAPR : Decimal
+
+    fraudProbability : Decimal
+
+    aiSummary : Text
+
+    privateMemo : Text
+
+  where
+
+    signatory platform
+
+    observer borrower

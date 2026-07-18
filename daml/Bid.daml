@@ -1,0 +1,30 @@
+module Bid where
+
+template Bid
+  with
+
+    lender : Party
+
+    platform : Party
+
+    invoiceNumber : Text
+
+    bidAmount : Decimal
+
+    apr : Decimal
+
+    message : Text
+
+where
+
+    signatory lender
+
+    observer platform
+
+    choice Withdraw : ()
+
+      controller lender
+
+      do
+
+          archive self

@@ -1,0 +1,35 @@
+module Invoice where
+
+template Invoice
+
+  with
+
+    issuer : Party
+
+    borrower : Party
+
+    invoiceNumber : Text
+
+    buyer : Text
+
+    amount : Decimal
+
+    dueDate : Date
+
+    industry : Text
+
+    uploadTime : Time
+
+    status : Text
+
+  where
+
+    signatory issuer, borrower
+
+    choice ArchiveInvoice : ()
+
+  controller issuer
+
+  do
+
+      archive self

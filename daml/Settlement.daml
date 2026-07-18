@@ -1,0 +1,35 @@
+module Settlement where
+
+template Settlement
+
+  with
+
+    platform : Party
+
+    borrower : Party
+
+    winningLender : Party
+
+    invoiceNumber : Text
+
+    fundedAmount : Decimal
+
+    finalAPR : Decimal
+
+    settlementDate : Date
+
+    settlementStatus : Text
+
+  where
+
+    signatory platform, winningLender
+
+    observer borrower
+
+    choice Settle : ()
+
+      controller platform
+
+      do
+
+        archive self
